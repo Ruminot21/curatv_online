@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player PRO</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+body{
+  margin:0;
+  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.player-container{
+  width:100%;
+  max-width:900px;
+  position:relative;
+}
+
+video{
+  width:100%;
+  border-radius:12px;
+}
+
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="player-container">
+  <video id="video" controls playsinline></video>
+  <div id="overlay" class="overlay">🔊 Tocar para activar sonido</div>
+</div>
+
+<script>
+const video = document.getElementById('video');
+const overlay = document.getElementById('overlay');
+const src = "https://micanal.ovh/livestreams/397.JC4F3G0GWHZA.m3u8";
+
+// Cargar stream
+if (Hls.isSupported()) {
+  const hls = new Hls();
+  hls.loadSource(src);
+  hls.attachMedia(video);
+} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  video.src = src;
+}
+
+// Intento autoplay con sonido
+video.muted = false;
+video.volume = 1;
+
+video.play().then(() => {
+  overlay.style.display = "none";
+}).catch(() => {
+  // Si el navegador bloquea, mostramos overlay
+  overlay.style.display = "flex";
+});
+
+// Activar sonido con un click
+overlay.addEventListener('click', () => {
+  video.muted = false;
+  video.volume = 1;
+  video.play();
+  overlay.style.display = "none";
+});
+</script>
+
+</body>
+</html>
